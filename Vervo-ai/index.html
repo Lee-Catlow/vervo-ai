@@ -1,179 +1,339 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vervo AI</title>
-<meta name="description" content="Something is coming. Vervo AI.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#08090d;--surface:#0e1017;--accent:#4f6df5;--accent2:#7b5cf7;--glow:rgba(79,109,245,.15);--text:#e8eaf0;--sub:#6b7189;--dim:#2a2d3a}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;position:relative}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vervo AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230EA5E9'/><text x='16' y='22' text-anchor='middle' font-family='sans-serif' font-weight='700' font-size='18' fill='white'>V</text></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ── BACKGROUND ── */
-.bg-grid{position:fixed;inset:0;z-index:0;opacity:.04;
-  background-image:linear-gradient(var(--dim) 1px,transparent 1px),linear-gradient(90deg,var(--dim) 1px,transparent 1px);
-  background-size:60px 60px;
-}
-.bg-grad{position:fixed;inset:0;z-index:0;
-  background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(79,109,245,.08),transparent 70%),
-             radial-gradient(ellipse 60% 50% at 70% 60%,rgba(123,92,247,.06),transparent 60%);
-}
-.bg-noise{position:fixed;inset:0;z-index:0;opacity:.03;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #0A1628;
+      color: #F8FAFC;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
 
-/* ── ORB ── */
-.orb-container{position:fixed;top:50%;left:50%;transform:translate(-50%,-55%);z-index:1;width:420px;height:420px;pointer-events:none}
-.orb{width:100%;height:100%;border-radius:50%;position:relative;animation:orbFloat 8s ease-in-out infinite}
-.orb::before{content:'';position:absolute;inset:-2px;border-radius:50%;
-  background:conic-gradient(from 0deg,var(--accent),var(--accent2),transparent,var(--accent));
-  animation:orbSpin 12s linear infinite;opacity:.3;filter:blur(30px)}
-.orb::after{content:'';position:absolute;inset:20px;border-radius:50%;
-  background:radial-gradient(circle at 40% 35%,rgba(79,109,245,.2),rgba(123,92,247,.1) 50%,transparent 70%);
-  backdrop-filter:blur(1px);border:1px solid rgba(79,109,245,.08)}
-.orb-ring{position:absolute;inset:-40px;border-radius:50%;border:1px solid rgba(79,109,245,.06);animation:orbSpin 20s linear infinite reverse}
-.orb-ring2{position:absolute;inset:-80px;border-radius:50%;border:1px solid rgba(123,92,247,.04);animation:orbSpin 30s linear infinite}
-.orb-dot{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.6}
-.orb-dot:nth-child(1){top:10%;left:50%;animation:dotPulse 3s ease-in-out infinite}
-.orb-dot:nth-child(2){top:50%;right:8%;animation:dotPulse 3s ease-in-out infinite .5s}
-.orb-dot:nth-child(3){bottom:12%;left:30%;animation:dotPulse 3s ease-in-out infinite 1s}
+    /* === AI ORB === */
+    .orb-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px;
+      height: 500px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-@keyframes orbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
-@keyframes orbSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes dotPulse{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.8;transform:scale(1.8)}}
+    .orb {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%,
+        rgba(14, 165, 233, 0.25) 0%,
+        rgba(14, 165, 233, 0.08) 40%,
+        rgba(14, 165, 233, 0.02) 70%,
+        transparent 100%
+      );
+      animation: orb-breathe 6s ease-in-out infinite;
+    }
 
-/* ── CONTENT ── */
-.content{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center}
+    .orb::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      border: 1px solid rgba(14, 165, 233, 0.12);
+      animation: orb-breathe 6s ease-in-out infinite reverse;
+    }
 
-/* Logo */
-.logo{margin-bottom:60px;opacity:0;animation:fadeUp .8s ease-out .2s forwards}
-.logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(52px,8vw,80px);letter-spacing:-2px;
-  background:linear-gradient(135deg,var(--text) 0%,var(--accent) 50%,var(--accent2) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  line-height:1}
-.logo-ai{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(52px,8vw,80px);letter-spacing:-2px;
-  -webkit-text-fill-color:transparent;background-clip:text;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  -webkit-background-clip:text;opacity:.5;margin-left:8px}
+    .orb::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.4) 0%, transparent 70%);
+      filter: blur(8px);
+      animation: core-pulse 3s ease-in-out infinite;
+    }
 
-/* Tagline */
-.tagline{font-size:clamp(18px,2.5vw,26px);font-weight:200;color:var(--sub);letter-spacing:.5px;max-width:500px;line-height:1.5;
-  opacity:0;animation:fadeUp .8s ease-out .5s forwards}
+    /* Orbital rings */
+    .ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border-radius: 50%;
+      border: 1px solid rgba(14, 165, 233, 0.06);
+    }
+    .ring-1 {
+      width: 280px; height: 280px;
+      transform: translate(-50%, -50%) rotateX(65deg) rotateZ(0deg);
+      animation: orbit 20s linear infinite;
+    }
+    .ring-2 {
+      width: 340px; height: 340px;
+      transform: translate(-50%, -50%) rotateX(70deg) rotateZ(60deg);
+      animation: orbit 28s linear infinite reverse;
+      border-color: rgba(14, 165, 233, 0.04);
+    }
+    .ring-3 {
+      width: 400px; height: 400px;
+      transform: translate(-50%, -50%) rotateX(55deg) rotateZ(120deg);
+      animation: orbit 35s linear infinite;
+      border-color: rgba(14, 165, 233, 0.03);
+    }
 
-/* Accent line */
-.accent-line{width:48px;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));margin:32px auto;border-radius:1px;
-  opacity:0;animation:fadeUp .8s ease-out .7s forwards}
+    /* Floating particles on rings */
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #0EA5E9;
+    }
+    .ring-1 .particle { top: -2px; left: 50%; box-shadow: 0 0 8px rgba(14, 165, 233, 0.6); animation: particle-glow 3s ease-in-out infinite; }
+    .ring-2 .particle { bottom: -2px; right: 20%; width: 3px; height: 3px; opacity: 0.6; box-shadow: 0 0 6px rgba(14, 165, 233, 0.4); animation: particle-glow 4s ease-in-out infinite 1s; }
+    .ring-3 .particle { top: 30%; left: -2px; width: 2px; height: 2px; opacity: 0.4; box-shadow: 0 0 4px rgba(14, 165, 233, 0.3); animation: particle-glow 5s ease-in-out infinite 2s; }
 
-/* Teaser words */
-.teaser{display:flex;gap:28px;margin-top:8px;opacity:0;animation:fadeUp .8s ease-out .9s forwards}
-.teaser-word{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--dim);position:relative;padding:8px 0}
-.teaser-word::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.3}
+    /* Scattered ambient dots */
+    .dots {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .dot {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: rgba(14, 165, 233, 0.15);
+    }
+    .dot:nth-child(1) { top: 15%; left: 20%; animation: twinkle 4s ease-in-out infinite; }
+    .dot:nth-child(2) { top: 25%; right: 15%; animation: twinkle 5s ease-in-out infinite 1s; }
+    .dot:nth-child(3) { bottom: 20%; left: 12%; animation: twinkle 6s ease-in-out infinite 0.5s; }
+    .dot:nth-child(4) { bottom: 30%; right: 25%; animation: twinkle 4.5s ease-in-out infinite 2s; }
+    .dot:nth-child(5) { top: 40%; left: 8%; animation: twinkle 5.5s ease-in-out infinite 1.5s; width: 1px; height: 1px; }
+    .dot:nth-child(6) { top: 60%; right: 10%; animation: twinkle 7s ease-in-out infinite 3s; width: 1px; height: 1px; }
+    .dot:nth-child(7) { top: 10%; left: 55%; animation: twinkle 6s ease-in-out infinite 0.8s; width: 1.5px; height: 1.5px; }
+    .dot:nth-child(8) { bottom: 12%; right: 40%; animation: twinkle 5s ease-in-out infinite 2.5s; }
 
-/* Status */
-.status{margin-top:60px;opacity:0;animation:fadeUp .8s ease-out 1.1s forwards}
-.status-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border:1px solid var(--dim);border-radius:100px;font-size:12px;font-weight:400;color:var(--sub);letter-spacing:1px;text-transform:uppercase}
-.status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:statusPulse 2s ease-in-out infinite}
-@keyframes statusPulse{0%,100%{opacity:.4;box-shadow:0 0 0 0 rgba(79,109,245,.3)}50%{opacity:1;box-shadow:0 0 0 6px rgba(79,109,245,0)}}
+    @keyframes orb-breathe {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      50% { transform: translate(-50%, -50%) scale(1.06); opacity: 0.85; }
+    }
+    @keyframes core-pulse {
+      0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    }
+    @keyframes orbit {
+      from { transform: translate(-50%, -50%) rotateX(65deg) rotateZ(0deg); }
+      to { transform: translate(-50%, -50%) rotateX(65deg) rotateZ(360deg); }
+    }
+    @keyframes particle-glow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.15; }
+      50% { opacity: 0.5; }
+    }
 
-/* Floating particles */
-.particles{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
-.particle{position:absolute;width:2px;height:2px;background:var(--accent);border-radius:50%;opacity:0;animation:particleFloat linear infinite}
-@keyframes particleFloat{0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:.4}90%{opacity:.4}100%{transform:translateY(-10vh) translateX(40px);opacity:0}}
+    /* === CONTENT === */
+    .container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 24px;
+    }
 
-/* Bottom bar */
-.bottom-bar{position:fixed;bottom:0;left:0;right:0;z-index:10;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;
-  opacity:0;animation:fadeUp .6s ease-out 1.4s forwards}
-.bottom-left{font-size:10px;color:var(--dim);letter-spacing:2px;text-transform:uppercase}
-.bottom-right{font-size:10px;color:var(--dim);letter-spacing:1px}
+    .brand {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fade-up 0.8s ease forwards 0.3s;
+    }
+    .brand span { color: #0EA5E9; }
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .tagline {
+      font-size: 17px;
+      font-weight: 400;
+      color: #94A3B8;
+      line-height: 1.7;
+      max-width: 440px;
+      margin: 0 auto 36px;
+      opacity: 0;
+      animation: fade-up 0.8s ease forwards 0.6s;
+    }
 
-/* ── CURSOR GLOW (desktop) ── */
-.cursor-glow{position:fixed;width:300px;height:300px;border-radius:50%;pointer-events:none;z-index:2;
-  background:radial-gradient(circle,rgba(79,109,245,.06),transparent 70%);
-  transform:translate(-50%,-50%);transition:left .3s ease-out,top .3s ease-out;display:none}
+    .line {
+      width: 40px;
+      height: 2px;
+      background: #0EA5E9;
+      margin: 0 auto 36px;
+      border-radius: 1px;
+      opacity: 0;
+      animation: fade-up 0.6s ease forwards 0.8s;
+    }
 
-@media(hover:hover){.cursor-glow{display:block}}
+    .cycle-wrap {
+      margin-bottom: 44px;
+      opacity: 0;
+      animation: fade-up 0.8s ease forwards 1.0s;
+    }
+    .cycle-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #475569;
+      margin-bottom: 10px;
+    }
+    .cycle-words {
+      height: 30px;
+      overflow: hidden;
+      position: relative;
+    }
+    .cycle-track {
+      display: flex;
+      flex-direction: column;
+      animation: scroll-words 10s ease-in-out infinite;
+    }
+    .cycle-word {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 600;
+      color: #0EA5E9;
+    }
 
-/* ── RESPONSIVE ── */
-@media(max-width:600px){
-  .orb-container{width:280px;height:280px}
-  .teaser{gap:16px;flex-wrap:wrap;justify-content:center}
-  .bottom-bar{flex-direction:column;gap:8px;text-align:center}
-}
-</style>
+    @keyframes scroll-words {
+      0%, 18% { transform: translateY(0); }
+      22%, 38% { transform: translateY(-30px); }
+      42%, 58% { transform: translateY(-60px); }
+      62%, 78% { transform: translateY(-90px); }
+      82%, 100% { transform: translateY(-120px); }
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(14, 165, 233, 0.06);
+      border: 1px solid rgba(14, 165, 233, 0.12);
+      border-radius: 100px;
+      font-size: 13px;
+      color: #64748B;
+      opacity: 0;
+      animation: fade-up 0.8s ease forwards 1.2s;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #0EA5E9;
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 11px;
+      color: #1E293B;
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      .brand { font-size: 36px; }
+      .tagline { font-size: 15px; max-width: 320px; }
+      .orb-container { width: 300px; height: 300px; }
+      .orb { width: 140px; height: 140px; }
+      .ring-1 { width: 180px; height: 180px; }
+      .ring-2 { width: 220px; height: 220px; }
+      .ring-3 { width: 260px; height: 260px; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="bg-grid"></div>
-<div class="bg-grad"></div>
-<div class="bg-noise"></div>
-
-<div class="particles" id="particles"></div>
-
-<div class="orb-container">
-  <div class="orb">
-    <div class="orb-dot"></div>
-    <div class="orb-dot"></div>
-    <div class="orb-dot"></div>
-  </div>
-  <div class="orb-ring"></div>
-  <div class="orb-ring2"></div>
-</div>
-
-<div class="cursor-glow" id="cursorGlow"></div>
-
-<div class="content">
-  <div class="logo">
-    <span class="logo-text">Vervo</span><span class="logo-ai">AI</span>
+  <!-- Ambient dots -->
+  <div class="dots">
+    <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
   </div>
 
-  <p class="tagline">Something intelligent is taking shape.</p>
-
-  <div class="accent-line"></div>
-
-  <div class="teaser">
-    <span class="teaser-word">Think</span>
-    <span class="teaser-word">Build</span>
-    <span class="teaser-word">Transform</span>
+  <!-- AI Orb -->
+  <div class="orb-container">
+    <div class="ring ring-1"><div class="particle"></div></div>
+    <div class="ring ring-2"><div class="particle"></div></div>
+    <div class="ring ring-3"><div class="particle"></div></div>
+    <div class="orb"></div>
   </div>
 
-  <div class="status">
-    <span class="status-badge">
-      <span class="status-dot"></span>
-      Coming Soon
-    </span>
+  <!-- Content -->
+  <div class="container">
+    <h1 class="brand">Vervo <span>AI</span></h1>
+
+    <p class="tagline">
+      Banking compliance shouldn't hold your business back. We're building something that makes sure it never does.
+    </p>
+
+    <div class="line"></div>
+
+    <div class="cycle-wrap">
+      <div class="cycle-label">What we unlock</div>
+      <div class="cycle-words">
+        <div class="cycle-track">
+          <div class="cycle-word">Faster banking access</div>
+          <div class="cycle-word">Weeks of KYC in minutes</div>
+          <div class="cycle-word">Freedom to focus on growth</div>
+          <div class="cycle-word">Every bank, one platform</div>
+          <div class="cycle-word">Faster banking access</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="status">
+      <div class="status-dot"></div>
+      Coming soon
+    </div>
   </div>
-</div>
 
-<div class="bottom-bar">
-  <span class="bottom-left">Vervo AI · 2026</span>
-  <span class="bottom-right">Stay tuned</span>
-</div>
-
-<script>
-// Particles
-const pc=document.getElementById('particles');
-for(let i=0;i<20;i++){
-  const p=document.createElement('div');
-  p.className='particle';
-  p.style.left=Math.random()*100+'%';
-  p.style.animationDuration=(8+Math.random()*12)+'s';
-  p.style.animationDelay=(Math.random()*10)+'s';
-  p.style.width=p.style.height=(1+Math.random()*2)+'px';
-  p.style.opacity=String(Math.random()*.3);
-  pc.appendChild(p);
-}
-
-// Cursor glow
-const glow=document.getElementById('cursorGlow');
-document.addEventListener('mousemove',e=>{
-  glow.style.left=e.clientX+'px';
-  glow.style.top=e.clientY+'px';
-});
-</script>
+  <div class="footer">&copy; 2026 Vervo AI</div>
 </body>
 </html>
